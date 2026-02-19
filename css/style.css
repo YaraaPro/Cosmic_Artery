@@ -1,0 +1,244 @@
+﻿:root {
+  --bg: #060915;
+  --bg-soft: #0d1530;
+  --surface: rgba(18, 29, 59, 0.78);
+  --text: #e9eeff;
+  --text-soft: #b7c3ea;
+  --accent: #76d6ff;
+  --accent-strong: #2bb4f2;
+  --border: rgba(156, 196, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 20% 20%, #14234f 0%, transparent 35%),
+    radial-gradient(circle at 80% 10%, #1f2f64 0%, transparent 30%),
+    linear-gradient(180deg, #050712 0%, #0b1230 60%, #091029 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.8), transparent 70%),
+    radial-gradient(1.5px 1.5px at 120px 80px, rgba(176, 220, 255, 0.9), transparent 70%),
+    radial-gradient(1px 1px at 70px 130px, rgba(255, 255, 255, 0.75), transparent 70%),
+    radial-gradient(1.5px 1.5px at 200px 170px, rgba(181, 205, 255, 0.9), transparent 70%);
+  background-size: 220px 220px;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+.site-header,
+main,
+.site-footer {
+  width: min(1080px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.site-header {
+  padding: 1.2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 9px rgba(118, 214, 255, 0.3));
+  transition: transform 180ms ease;
+}
+
+.brand:hover .brand-mark {
+  transform: rotate(-6deg) scale(1.03);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-name {
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brand-tagline {
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.64rem;
+}
+
+.nav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 0.9rem;
+}
+
+.nav-list a {
+  color: var(--text-soft);
+  text-decoration: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.nav-list a:hover,
+.nav-list a.active {
+  color: var(--text);
+  background-color: rgba(139, 202, 255, 0.16);
+}
+
+.hero {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background-color: var(--surface);
+  backdrop-filter: blur(4px);
+}
+
+.hero-small {
+  margin-top: 1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+h1 {
+  margin: 0.5rem 0 1rem;
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1.15;
+}
+
+p {
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 0.8rem;
+  color: #031021;
+  background-color: var(--accent);
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  border-radius: 0.6rem;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: var(--accent-strong);
+}
+
+.highlights {
+  margin: 1.2rem 0 2.2rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.card,
+.product-card {
+  border: 1px solid var(--border);
+  background: rgba(13, 21, 48, 0.85);
+  border-radius: 0.9rem;
+  padding: 1rem;
+}
+
+.card h2,
+.product-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.45rem;
+  font-size: 1.15rem;
+}
+
+.shop-main {
+  margin-bottom: 2rem;
+}
+
+.product-grid {
+  margin-top: 1.2rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.price {
+  color: var(--accent);
+  margin: 0.35rem 0;
+  font-weight: 700;
+}
+
+button {
+  margin-top: 0.65rem;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.site-footer {
+  padding: 1rem 0 1.8rem;
+  font-size: 0.92rem;
+}
+
+.footer-note {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .brand-name {
+    font-size: 0.95rem;
+  }
+
+  .brand-tagline {
+    letter-spacing: 0.1em;
+    font-size: 0.58rem;
+  }
+
+  .hero {
+    padding: 1.35rem;
+  }
+}
+
