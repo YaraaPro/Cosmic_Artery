@@ -50,8 +50,10 @@ main,
 .site-header {
   padding: 1.2rem 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.7rem;
 }
 
 .brand {
@@ -60,18 +62,56 @@ main,
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(10, 18, 40, 0.86), rgba(7, 12, 28, 0.72));
+  border: 1px solid rgba(145, 205, 255, 0.24);
+}
+
+.brand-toggle {
+  cursor: pointer;
+  font: inherit;
 }
 
 .brand-mark {
-  width: 44px;
-  height: 44px;
+  width: clamp(132px, 18vw, 230px);
+  height: auto;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 9px rgba(118, 214, 255, 0.3));
-  transition: transform 180ms ease;
+  border-radius: 12px;
+  padding: 0.28rem;
+  background: radial-gradient(circle at 28% 20%, rgba(39, 69, 140, 0.9), rgba(6, 10, 24, 0.96));
+  border: 1px solid rgba(164, 216, 255, 0.34);
+  filter: drop-shadow(0 0 14px rgba(118, 214, 255, 0.32)) contrast(1.08) saturate(1.06);
+  transition: transform 180ms ease, filter 180ms ease;
 }
 
 .brand:hover .brand-mark {
-  transform: rotate(-6deg) scale(1.03);
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 18px rgba(118, 214, 255, 0.42)) contrast(1.1) saturate(1.08);
+}
+
+.brand-toggle[aria-expanded="true"] .brand-mark {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 18px rgba(118, 214, 255, 0.42)) contrast(1.1) saturate(1.08);
+}
+
+.site-nav {
+  overflow: hidden;
+}
+
+html.js .site-nav {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: max-height 220ms ease, opacity 220ms ease, transform 220ms ease;
+}
+
+html.js .site-nav.is-open {
+  max-height: 200px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .brand-text {
@@ -100,7 +140,8 @@ main,
   padding: 0;
   list-style: none;
   display: flex;
-  gap: 0.9rem;
+  gap: 0.7rem;
+  flex-wrap: wrap;
 }
 
 .nav-list a {
@@ -224,8 +265,13 @@ button {
 
 @media (max-width: 640px) {
   .site-header {
-    gap: 0.8rem;
-    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .brand-mark {
+    width: clamp(112px, 38vw, 170px);
+    padding: 0.2rem;
+    border-radius: 10px;
   }
 
   .brand-name {
@@ -241,4 +287,3 @@ button {
     padding: 1.35rem;
   }
 }
-

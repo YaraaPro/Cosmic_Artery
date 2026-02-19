@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cosmic Artery | Shop</title>
   <meta name="description" content="Shop handcrafted cosmic art and accessories from Cosmic Artery." />
+  <script>document.documentElement.classList.add("js");</script>
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -12,10 +13,10 @@
   <div class="stars" aria-hidden="true"></div>
 
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Cosmic Artery Home">
+    <button class="brand brand-toggle" type="button" aria-label="Toggle navigation menu" aria-controls="site-nav" aria-expanded="false">
       <img class="brand-mark" src="assets/brand/Cosmic Artery logo 2.png" alt="" />
-    </a>
-    <nav>
+    </button>
+    <nav class="site-nav" id="site-nav">
       <ul class="nav-list">
         <li><a href="index.html">Home</a></li>
         <li><a class="active" href="shop.html">Shop</a></li>
@@ -58,6 +59,6 @@
     <p>© 2026 Cosmic Artery. All rights reserved.</p>
     <p class="footer-note">Starter brand assets are live and can be replaced with your final logo files anytime.</p>
   </footer>
+  <script src="js/main.js"></script>
 </body>
 </html>
-
