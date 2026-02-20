@@ -50,10 +50,10 @@ main,
 .site-header {
   padding: 1.2rem 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 0.7rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -71,6 +71,7 @@ main,
 .brand-toggle {
   cursor: pointer;
   font: inherit;
+  margin-top: 0;
 }
 
 .brand-mark {
@@ -96,21 +97,13 @@ main,
 }
 
 .site-nav {
-  overflow: hidden;
+  overflow: visible;
 }
 
 html.js .site-nav {
-  max-height: 0;
-  opacity: 0;
-  transform: translateY(-10px);
-  pointer-events: none;
-  transition: max-height 220ms ease, opacity 220ms ease, transform 220ms ease;
-}
-
-html.js .site-nav.is-open {
-  max-height: 200px;
+  max-height: none;
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
   pointer-events: auto;
 }
 
@@ -145,6 +138,7 @@ html.js .site-nav.is-open {
 }
 
 .nav-list a {
+  display: inline-block;
   color: var(--text-soft);
   text-decoration: none;
   padding: 0.35rem 0.7rem;
@@ -231,11 +225,87 @@ p {
   margin-bottom: 2rem;
 }
 
+.shop-controls {
+  margin-top: 1.2rem;
+  border: 1px solid var(--border);
+  background: rgba(13, 21, 48, 0.85);
+  border-radius: 0.9rem;
+  padding: 1rem;
+}
+
+.shop-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+}
+
+.shop-tab,
+.art-type,
+.accessory-type {
+  margin: 0;
+  background: transparent;
+  color: var(--text-soft);
+  border: 1px solid rgba(156, 196, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.shop-tab.is-active,
+.art-type.is-active,
+.accessory-type.is-active,
+.shop-tab:hover,
+.art-type:hover,
+.accessory-type:hover {
+  color: var(--text);
+  border-color: rgba(118, 214, 255, 0.65);
+  background-color: rgba(39, 183, 255, 0.12);
+}
+
+.art-types,
+.accessory-types {
+  display: block;
+}
+
+.art-types[hidden],
+.accessory-types[hidden] {
+  display: none;
+}
+
+.filter-label {
+  margin: 0 0 0.45rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.art-type-list,
+.accessory-type-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .product-grid {
   margin-top: 1.2rem;
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.product-card.is-hidden {
+  display: none;
+}
+
+.product-meta {
+  margin: 0 0 0.4rem;
+  color: var(--accent);
+  font-size: 0.77rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .price {
@@ -244,7 +314,7 @@ p {
   font-weight: 700;
 }
 
-button {
+.product-card button {
   margin-top: 0.65rem;
   background: transparent;
   color: var(--text);
@@ -263,9 +333,78 @@ button {
   font-size: 0.82rem;
 }
 
+.shop-empty {
+  margin-top: 1rem;
+}
+
+.contact-main {
+  margin-bottom: 2rem;
+}
+
+.contact-grid {
+  margin-top: 1.2rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.contact-card {
+  border: 1px solid var(--border);
+  background: rgba(13, 21, 48, 0.85);
+  border-radius: 0.9rem;
+  padding: 1rem;
+}
+
+.contact-card h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.contact-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.contact-link:hover {
+  color: var(--text);
+}
+
 @media (max-width: 640px) {
   .site-header {
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
     gap: 0.55rem;
+    flex-wrap: nowrap;
+  }
+
+  .brand-toggle {
+    align-self: center;
+  }
+
+  .site-nav {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+  }
+
+  html.js .site-nav {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: max-height 220ms ease, opacity 220ms ease, transform 220ms ease;
+  }
+
+  html.js .site-nav.is-open {
+    max-height: 240px;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .brand-mark {
@@ -283,7 +422,19 @@ button {
     font-size: 0.58rem;
   }
 
+  .nav-list {
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+  }
+
   .hero {
     padding: 1.35rem;
+  }
+
+  .shop-tabs,
+  .art-type-list,
+  .accessory-type-list {
+    justify-content: center;
   }
 }
