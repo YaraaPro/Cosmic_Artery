@@ -5,6 +5,10 @@ const accessoryTypeButtons = document.querySelectorAll(".accessory-type");
 const artTypeControls = document.querySelector("#art-type-controls");
 const accessoryTypeControls = document.querySelector("#accessory-type-controls");
 const emptyState = document.querySelector("#shop-empty");
+const productImageButtons = document.querySelectorAll(".product-image-btn");
+const lightbox = document.querySelector("#image-lightbox");
+const lightboxImage = document.querySelector("#lightbox-image");
+const lightboxCaption = document.querySelector("#lightbox-caption");
 
 if (shopRoot && tabButtons.length > 0) {
   let activeTab = "art";
@@ -93,4 +97,76 @@ if (shopRoot && tabButtons.length > 0) {
   setActiveTab(activeTab);
   setActiveArtType(activeArtType);
   setActiveAccessoryType(activeAccessoryType);
+
+  const setImageOrientation = (img, wrapper) => {
+    if (!img || !wrapper) {
+      return;
+    }
+    const width = img.naturalWidth || 0;
+    const height = img.naturalHeight || 1;
+    const ratio = width / height;
+    let orientation = "square";
+
+    if (ratio > 1.12) {
+      orientation = "landscape";
+    } else if (ratio < 0.88) {
+      orientation = "portrait";
+    }
+    wrapper.dataset.orientation = orientation;
+  };
+
+  const openLightbox = (img) => {
+    if (!lightbox || !lightboxImage) {
+      return;
+    }
+
+    lightboxImage.src = img.currentSrc || img.src;
+    lightboxImage.alt = img.alt || "Product image preview";
+
+    if (lightboxCaption) {
+      lightboxCaption.textContent = img.alt || "";
+    }
+
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeLightbox = () => {
+    if (!lightbox || !lightboxImage) {
+      return;
+    }
+    lightbox.hidden = true;
+    lightboxImage.src = "";
+    document.body.style.overflow = "";
+  };
+
+  productImageButtons.forEach((button) => {
+    const img = button.querySelector("img");
+    if (!img) {
+      return;
+    }
+
+    if (img.complete && img.naturalWidth > 0) {
+      setImageOrientation(img, button);
+    } else {
+      img.addEventListener("load", () => setImageOrientation(img, button), { once: true });
+    }
+
+    button.addEventListener("click", () => openLightbox(img));
+  });
+
+  if (lightbox) {
+    lightbox.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.hasAttribute("data-lightbox-close")) {
+        closeLightbox();
+      }
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && lightbox && !lightbox.hidden) {
+      closeLightbox();
+    }
+  });
 }
