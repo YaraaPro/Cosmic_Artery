@@ -242,7 +242,9 @@ p {
 
 .shop-tab,
 .art-type,
-.accessory-type {
+.accessory-type,
+.art-print-type,
+.commission-type {
   margin: 0;
   background: transparent;
   color: var(--text-soft);
@@ -256,21 +258,29 @@ p {
 .shop-tab.is-active,
 .art-type.is-active,
 .accessory-type.is-active,
+.art-print-type.is-active,
+.commission-type.is-active,
 .shop-tab:hover,
 .art-type:hover,
-.accessory-type:hover {
+.accessory-type:hover,
+.art-print-type:hover,
+.commission-type:hover {
   color: var(--text);
   border-color: rgba(118, 214, 255, 0.65);
   background-color: rgba(39, 183, 255, 0.12);
 }
 
 .art-types,
-.accessory-types {
+.accessory-types,
+.art-print-types,
+.commission-types {
   display: block;
 }
 
 .art-types[hidden],
-.accessory-types[hidden] {
+.accessory-types[hidden],
+.art-print-types[hidden],
+.commission-types[hidden] {
   display: none;
 }
 
@@ -283,7 +293,9 @@ p {
 }
 
 .art-type-list,
-.accessory-type-list {
+.accessory-type-list,
+.art-print-type-list,
+.commission-type-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -529,7 +541,9 @@ p {
 
   .shop-tabs,
   .art-type-list,
-  .accessory-type-list {
+  .accessory-type-list,
+  .art-print-type-list,
+  .commission-type-list {
     justify-content: center;
   }
 }
