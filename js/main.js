@@ -2,6 +2,22 @@ const brandToggle = document.querySelector(".brand-toggle");
 const siteNav = document.querySelector(".site-nav");
 const siteHeader = document.querySelector(".site-header");
 const mobileQuery = window.matchMedia("(max-width: 640px)");
+const cartCountEls = document.querySelectorAll("[data-cart-count]");
+
+const updateCartCount = () => {
+  if (!window.CartStore || cartCountEls.length === 0) {
+    return;
+  }
+
+  const count = window.CartStore.getCartCount();
+  cartCountEls.forEach((el) => {
+    el.textContent = String(count);
+    el.hidden = count <= 0;
+  });
+};
+
+updateCartCount();
+window.addEventListener("cart:updated", updateCartCount);
 
 if (brandToggle && siteNav) {
   const setOpen = (open) => {

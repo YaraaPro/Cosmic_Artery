@@ -10,6 +10,7 @@ const artPrintTypeControls = document.querySelector("#art-print-type-controls");
 const commissionTypeControls = document.querySelector("#commission-type-controls");
 const emptyState = document.querySelector("#shop-empty");
 const productImageButtons = document.querySelectorAll(".product-image-btn");
+const productCtaButtons = document.querySelectorAll(".product-cta");
 const lightbox = document.querySelector("#image-lightbox");
 const lightboxImage = document.querySelector("#lightbox-image");
 const lightboxCaption = document.querySelector("#lightbox-caption");
@@ -179,6 +180,53 @@ if (shopRoot && tabButtons.length > 0) {
     wrapper.dataset.orientation = orientation;
   };
 
+  const normalizeId = (value) =>
+    String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+
+  const flashButton = (button, text) => {
+    if (!button) {
+      return;
+    }
+    const original = button.textContent;
+    button.textContent = text;
+    button.disabled = true;
+    setTimeout(() => {
+      button.textContent = original;
+      button.disabled = false;
+    }, 900);
+  };
+
+  const buildItemFromCard = (card, overrides = {}) => {
+    if (!card || !window.CartStore) {
+      return null;
+    }
+
+    const title = card.querySelector("h2");
+    const meta = card.querySelector(".product-meta");
+    const priceNode = card.querySelector(".price");
+    const image = card.querySelector(".product-image");
+    const categoryMeta = meta ? meta.textContent.trim() : card.dataset.category || "Shop";
+    const categoryLabel = categoryMeta.split("·")[0].trim();
+    const name = overrides.name || (title ? title.textContent.trim() : "Item");
+    const priceText = overrides.priceText || (priceNode ? priceNode.textContent : "$0.00");
+    const price = window.CartStore.parsePriceValue(priceText);
+    const imageSrc = overrides.image || (image ? image.currentSrc || image.getAttribute("src") || "" : "");
+    const idPrefix = overrides.idPrefix || card.dataset.category || "item";
+    const id = `${normalizeId(idPrefix)}-${normalizeId(name)}`;
+
+    return {
+      id,
+      name,
+      category: overrides.category || categoryLabel,
+      price,
+      image: imageSrc,
+      qty: 1
+    };
+  };
+
   let miniPrintGalleryItems = [];
   let miniPrintIndex = 0;
   let miniPrintGalleryOpen = false;
@@ -300,6 +348,47 @@ if (shopRoot && tabButtons.length > 0) {
     setMiniPrintUI(false);
     document.body.style.overflow = "";
   };
+
+  productCtaButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!window.CartStore) {
+        return;
+      }
+      const card = button.closest(".product-card");
+      const item = buildItemFromCard(card);
+      if (!item) {
+        return;
+      }
+      window.CartStore.addItem(item);
+      flashButton(button, "Added");
+    });
+  });
+
+  if (miniPrintCartBtn) {
+    miniPrintCartBtn.addEventListener("click", () => {
+      if (!window.CartStore || !miniPrintGalleryOpen) {
+        return;
+      }
+      const miniPrintCard = shopRoot.querySelector('[data-mini-print-gallery="art"]');
+      const activeMini = miniPrintGalleryItems[miniPrintIndex];
+      if (!miniPrintCard || !activeMini) {
+        return;
+      }
+
+      const item = buildItemFromCard(miniPrintCard, {
+        name: `${activeMini.name} Mini Print`,
+        category: "Art Prints",
+        image: activeMini.src,
+        idPrefix: "mini-print"
+      });
+
+      if (!item) {
+        return;
+      }
+      window.CartStore.addItem(item);
+      flashButton(miniPrintCartBtn, "Added");
+    });
+  }
 
   productImageButtons.forEach((button) => {
     const img = button.querySelector("img");

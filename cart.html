@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expressionism Artery | Cart</title>
+  <meta name="description" content="Review items in your Expressionism Artery cart." />
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <button class="brand brand-toggle" type="button" aria-label="Toggle navigation menu" aria-controls="site-nav" aria-expanded="false">
+      <img class="brand-mark" src="assets/brand/Cosmic Artery logo 2.png" alt="" />
+    </button>
+    <nav class="site-nav" id="site-nav">
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a class="active" href="cart.html">Cart <span class="cart-count" data-cart-count>0</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="cart-main">
+    <section class="hero hero-small">
+      <p class="eyebrow">Cart</p>
+      <h1>Your Items</h1>
+      <p>Adjust quantities, remove items, or continue to checkout once ready.</p>
+    </section>
+
+    <section class="cart-wrap">
+      <div id="cart-empty" class="cart-empty" hidden>Your cart is empty. Add products from the shop.</div>
+      <div class="cart-list" id="cart-list"></div>
+      <div class="cart-summary">
+        <p>Items: <strong id="cart-item-count">0</strong></p>
+        <p>Total: <strong id="cart-total">$0.00</strong></p>
+        <div class="cart-summary-actions">
+          <button type="button" class="cart-btn" id="cart-clear-btn">Clear Cart</button>
+          <button type="button" class="cart-btn cart-btn-primary" id="cart-checkout-btn">Checkout (Soon)</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Cosmic Artery. All rights reserved.</p>
+  </footer>
+
+  <script src="js/cart-core.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>
