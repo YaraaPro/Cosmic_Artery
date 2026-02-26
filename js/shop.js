@@ -13,6 +13,10 @@ const productImageButtons = document.querySelectorAll(".product-image-btn");
 const lightbox = document.querySelector("#image-lightbox");
 const lightboxImage = document.querySelector("#lightbox-image");
 const lightboxCaption = document.querySelector("#lightbox-caption");
+const lightboxTitle = document.querySelector("#lightbox-title");
+const lightboxPrev = document.querySelector("[data-lightbox-prev]");
+const lightboxNext = document.querySelector("[data-lightbox-next]");
+const miniPrintCartBtn = document.querySelector("#mini-print-cart-btn");
 
 if (shopRoot && tabButtons.length > 0) {
   let activeTab = "art";
@@ -37,7 +41,10 @@ if (shopRoot && tabButtons.length > 0) {
       const accessoryTypeMatch =
         activeTab !== "accessories" || activeAccessoryType === "all" || accessoryType === activeAccessoryType;
       const artPrintTypeMatch =
-        activeTab !== "art-prints" || activeArtPrintType === "all" || artPrintType === activeArtPrintType;
+        activeTab !== "art-prints" ||
+        artPrintType === "all" ||
+        activeArtPrintType === "all" ||
+        artPrintType === activeArtPrintType;
       const commissionTypeMatch =
         activeTab !== "custom-commissions" || activeCommissionType === "all" || commissionType === activeCommissionType;
       const visible = tabMatch && artTypeMatch && accessoryTypeMatch && artPrintTypeMatch && commissionTypeMatch;
@@ -172,20 +179,112 @@ if (shopRoot && tabButtons.length > 0) {
     wrapper.dataset.orientation = orientation;
   };
 
-  const openLightbox = (img) => {
-    if (!lightbox || !lightboxImage) {
+  let miniPrintGalleryItems = [];
+  let miniPrintIndex = 0;
+  let miniPrintGalleryOpen = false;
+
+  const setMiniPrintUI = (enabled) => {
+    if (lightboxTitle) {
+      lightboxTitle.hidden = !enabled;
+    }
+    if (lightboxPrev) {
+      lightboxPrev.hidden = !enabled;
+    }
+    if (lightboxNext) {
+      lightboxNext.hidden = !enabled;
+    }
+    if (miniPrintCartBtn) {
+      miniPrintCartBtn.hidden = !enabled;
+    }
+  };
+
+  const collectMiniPrintGalleryItems = () => {
+    const artCards = shopRoot.querySelectorAll('.product-card[data-category="art"]');
+    return Array.from(artCards)
+      .map((card) => {
+        const cardTitle = card.querySelector("h2");
+        const image = card.querySelector(".product-image");
+        if (!cardTitle || !image) {
+          return null;
+        }
+        const name = cardTitle.textContent.trim();
+        const src = image.currentSrc || image.getAttribute("src") || "";
+        return {
+          name,
+          src,
+          alt: `${name} mini art print preview`
+        };
+      })
+      .filter((item) => item && item.src);
+  };
+
+  const renderMiniPrintGalleryItem = () => {
+    const item = miniPrintGalleryItems[miniPrintIndex];
+    if (!item || !lightboxImage) {
       return;
     }
 
+    lightboxImage.src = item.src;
+    lightboxImage.alt = item.alt;
+
+    if (lightboxCaption) {
+      lightboxCaption.textContent = `${item.name} - Mini Art Print`;
+    }
+    if (lightboxTitle) {
+      lightboxTitle.textContent = item.name;
+    }
+    if (miniPrintCartBtn) {
+      miniPrintCartBtn.textContent = `Add ${item.name} Mini Print to Cart`;
+    }
+
+    const singleItem = miniPrintGalleryItems.length <= 1;
+    if (lightboxPrev) {
+      lightboxPrev.disabled = singleItem;
+    }
+    if (lightboxNext) {
+      lightboxNext.disabled = singleItem;
+    }
+  };
+
+  const openRegularLightbox = (img, titleText = "") => {
+    if (!lightbox || !lightboxImage) {
+      return;
+    }
+    miniPrintGalleryOpen = false;
+    setMiniPrintUI(false);
     lightboxImage.src = img.currentSrc || img.src;
     lightboxImage.alt = img.alt || "Product image preview";
 
     if (lightboxCaption) {
-      lightboxCaption.textContent = img.alt || "";
+      lightboxCaption.textContent = titleText || img.alt || "";
     }
-
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
+  };
+
+  const openMiniPrintGalleryLightbox = () => {
+    if (!lightbox || !lightboxImage) {
+      return;
+    }
+    miniPrintGalleryItems = collectMiniPrintGalleryItems();
+    if (miniPrintGalleryItems.length === 0) {
+      return;
+    }
+    miniPrintGalleryOpen = true;
+    miniPrintIndex = 0;
+    setMiniPrintUI(true);
+    renderMiniPrintGalleryItem();
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+  };
+
+  const stepMiniPrintGallery = (direction) => {
+    if (!miniPrintGalleryOpen || miniPrintGalleryItems.length < 2) {
+      return;
+    }
+    const max = miniPrintGalleryItems.length;
+    miniPrintIndex = (miniPrintIndex + direction + max) % max;
+    renderMiniPrintGalleryItem();
   };
 
   const closeLightbox = () => {
@@ -194,6 +293,11 @@ if (shopRoot && tabButtons.length > 0) {
     }
     lightbox.hidden = true;
     lightboxImage.src = "";
+    if (lightboxCaption) {
+      lightboxCaption.textContent = "";
+    }
+    miniPrintGalleryOpen = false;
+    setMiniPrintUI(false);
     document.body.style.overflow = "";
   };
 
@@ -209,8 +313,24 @@ if (shopRoot && tabButtons.length > 0) {
       img.addEventListener("load", () => setImageOrientation(img, button), { once: true });
     }
 
-    button.addEventListener("click", () => openLightbox(img));
+    button.addEventListener("click", () => {
+      const card = button.closest(".product-card");
+      const title = card && card.querySelector("h2") ? card.querySelector("h2").textContent.trim() : "";
+      if (card && card.dataset.miniPrintGallery === "art") {
+        openMiniPrintGalleryLightbox();
+        return;
+      }
+      openRegularLightbox(img, title);
+    });
   });
+
+  if (lightboxPrev) {
+    lightboxPrev.addEventListener("click", () => stepMiniPrintGallery(-1));
+  }
+
+  if (lightboxNext) {
+    lightboxNext.addEventListener("click", () => stepMiniPrintGallery(1));
+  }
 
   if (lightbox) {
     lightbox.addEventListener("click", (event) => {
@@ -222,6 +342,14 @@ if (shopRoot && tabButtons.length > 0) {
   }
 
   document.addEventListener("keydown", (event) => {
+    if (miniPrintGalleryOpen && event.key === "ArrowLeft") {
+      stepMiniPrintGallery(-1);
+      return;
+    }
+    if (miniPrintGalleryOpen && event.key === "ArrowRight") {
+      stepMiniPrintGallery(1);
+      return;
+    }
     if (event.key === "Escape" && lightbox && !lightbox.hidden) {
       closeLightbox();
     }
