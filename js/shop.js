@@ -351,10 +351,16 @@ if (shopRoot && tabButtons.length > 0) {
 
   productCtaButtons.forEach((button) => {
     button.addEventListener("click", () => {
+      const card = button.closest(".product-card");
+      if (card && card.dataset.miniPrintGallery === "art") {
+        openMiniPrintGalleryLightbox();
+        return;
+      }
+
       if (!window.CartStore) {
         return;
       }
-      const card = button.closest(".product-card");
+
       const item = buildItemFromCard(card);
       if (!item) {
         return;

@@ -4,6 +4,7 @@ const cartTotal = document.querySelector("#cart-total");
 const cartItemCount = document.querySelector("#cart-item-count");
 const cartClearBtn = document.querySelector("#cart-clear-btn");
 const cartCheckoutBtn = document.querySelector("#cart-checkout-btn");
+const WHATSAPP_OWNER_NUMBER = "96176842023";
 
 if (window.CartStore && cartList) {
   const { loadCart, formatPrice, getCartCount, getCartTotal, updateQty, removeItem, clearCart } = window.CartStore;
@@ -85,7 +86,39 @@ if (window.CartStore && cartList) {
 
   if (cartCheckoutBtn) {
     cartCheckoutBtn.addEventListener("click", () => {
-      cartCheckoutBtn.textContent = "Checkout Coming Soon";
+      const items = loadCart();
+      if (items.length === 0) {
+        const originalText = cartCheckoutBtn.textContent;
+        cartCheckoutBtn.textContent = "Cart is Empty";
+        setTimeout(() => {
+          cartCheckoutBtn.textContent = originalText;
+        }, 900);
+        return;
+      }
+
+      const lines = [
+        "Hi! I would like to place an order from Cosmic Artery.",
+        "",
+        "Order details:"
+      ];
+
+      items.forEach((item) => {
+        const qty = Number(item.qty || 0);
+        const subtotal = Number(item.price || 0) * qty;
+        lines.push(`- ${qty} x ${item.name} (${item.category}) - ${formatPrice(subtotal)}`);
+      });
+
+      lines.push("");
+      lines.push(`Total: ${formatPrice(getCartTotal())}`);
+      lines.push("Please confirm availability and next steps.");
+
+      const encoded = encodeURIComponent(lines.join("\n"));
+      const url = `https://wa.me/${WHATSAPP_OWNER_NUMBER}?text=${encoded}`;
+      const popup = window.open(url, "_blank", "noopener,noreferrer");
+
+      if (!popup) {
+        window.location.href = url;
+      }
     });
   }
 
