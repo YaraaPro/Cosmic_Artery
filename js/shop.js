@@ -21,6 +21,9 @@ const lightboxNext = document.querySelector("[data-lightbox-next]");
 const miniPrintCartBtn = document.querySelector("#mini-print-cart-btn");
 
 if (shopRoot && tabButtons.length > 0) {
+  const HIDDEN_ITEMS_STORAGE_KEY = "expressionism_artery_hidden_items_v1";
+  const isManageMode = new URLSearchParams(window.location.search).get("manage") === "1";
+  const allCards = Array.from(shopRoot.querySelectorAll(".product-card"));
   let activeTab = "art";
   let activeArtType = "all";
   let activeAccessoryType = "all";
@@ -28,11 +31,101 @@ if (shopRoot && tabButtons.length > 0) {
   let activeCommissionType = "all";
   let showTypeControls = true;
 
+  const normalizeId = (value) =>
+    String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+
+  const loadHiddenItemKeys = () => {
+    try {
+      const raw = localStorage.getItem(HIDDEN_ITEMS_STORAGE_KEY);
+      if (!raw) {
+        return [];
+      }
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.map((item) => String(item || "")) : [];
+    } catch (_error) {
+      return [];
+    }
+  };
+
+  const hiddenItemKeys = new Set(loadHiddenItemKeys());
+
+  const saveHiddenItemKeys = () => {
+    try {
+      localStorage.setItem(HIDDEN_ITEMS_STORAGE_KEY, JSON.stringify(Array.from(hiddenItemKeys)));
+    } catch (_error) {
+      // Ignore storage errors.
+    }
+  };
+
+  const getCardVisibilityKey = (card) => String(card?.dataset.visibilityKey || "");
+  const isCardStoreHidden = (card) => hiddenItemKeys.has(getCardVisibilityKey(card));
+  const isCardHiddenForCustomer = (card) => !isManageMode && isCardStoreHidden(card);
+
+  const updateCardVisibilityUI = (card) => {
+    const hidden = isCardStoreHidden(card);
+    card.classList.toggle("is-store-hidden", hidden);
+
+    const visibilityBtn = card.querySelector(".visibility-toggle");
+    if (!visibilityBtn) {
+      return;
+    }
+    visibilityBtn.textContent = hidden ? "Unhide Item" : "Hide Item";
+    visibilityBtn.setAttribute("aria-pressed", String(hidden));
+  };
+
+  const toggleCardVisibility = (card) => {
+    const key = getCardVisibilityKey(card);
+    if (!key) {
+      return;
+    }
+    if (hiddenItemKeys.has(key)) {
+      hiddenItemKeys.delete(key);
+    } else {
+      hiddenItemKeys.add(key);
+    }
+    saveHiddenItemKeys();
+    updateCardVisibilityUI(card);
+    applyFilters();
+  };
+
+  allCards.forEach((card, index) => {
+    const title = card.querySelector("h2");
+    const key = `${normalizeId(card.dataset.category || "item")}-${normalizeId(
+      title ? title.textContent.trim() : `item-${index + 1}`
+    )}-${index + 1}`;
+    card.dataset.visibilityKey = key;
+
+    if (isManageMode) {
+      const toggleBtn = document.createElement("button");
+      toggleBtn.type = "button";
+      toggleBtn.className = "visibility-toggle";
+      toggleBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleCardVisibility(card);
+      });
+      card.appendChild(toggleBtn);
+    }
+    updateCardVisibilityUI(card);
+  });
+
+  if (isManageMode) {
+    const shopHero = document.querySelector(".shop-main .hero");
+    if (shopHero) {
+      const note = document.createElement("p");
+      note.className = "manage-note";
+      note.textContent = "Manage mode is on. Hidden items are visible only to you.";
+      shopHero.appendChild(note);
+    }
+  }
+
   const applyFilters = () => {
-    const cards = shopRoot.querySelectorAll(".product-card");
     let visibleCount = 0;
 
-    cards.forEach((card) => {
+    allCards.forEach((card) => {
       const category = (card.dataset.category || "").toLowerCase();
       const artType = (card.dataset.artType || "").toLowerCase();
       const accessoryType = (card.dataset.accessoryType || "").toLowerCase();
@@ -49,10 +142,12 @@ if (shopRoot && tabButtons.length > 0) {
         artPrintType === activeArtPrintType;
       const commissionTypeMatch =
         activeTab !== "custom-commissions" || activeCommissionType === "all" || commissionType === activeCommissionType;
-      const visible = tabMatch && artTypeMatch && accessoryTypeMatch && artPrintTypeMatch && commissionTypeMatch;
+      const visibleByFilters = tabMatch && artTypeMatch && accessoryTypeMatch && artPrintTypeMatch && commissionTypeMatch;
+      const visible = visibleByFilters && (isManageMode || !isCardStoreHidden(card));
 
       card.classList.toggle("is-hidden", !visible);
       card.hidden = !visible;
+      updateCardVisibilityUI(card);
       if (visible) {
         visibleCount += 1;
       }
@@ -181,12 +276,6 @@ if (shopRoot && tabButtons.length > 0) {
     wrapper.dataset.orientation = orientation;
   };
 
-  const normalizeId = (value) =>
-    String(value || "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-
   const flashButton = (button, text) => {
     if (!button) {
       return;
@@ -210,7 +299,7 @@ if (shopRoot && tabButtons.length > 0) {
     const priceNode = card.querySelector(".price");
     const image = card.querySelector(".product-image");
     const categoryMeta = meta ? meta.textContent.trim() : card.dataset.category || "Shop";
-    const categoryLabel = categoryMeta.split("·")[0].trim();
+    const categoryLabel = categoryMeta.split(/\s*[\u00B7\u2022]\s*/)[0].trim();
     const name = overrides.name || (title ? title.textContent.trim() : "Item");
     const priceText = overrides.priceText || (priceNode ? priceNode.textContent : "$0.00");
     const price = window.CartStore.parsePriceValue(priceText);
@@ -255,6 +344,7 @@ if (shopRoot && tabButtons.length > 0) {
   const collectMiniPrintGalleryItems = () => {
     const artCards = shopRoot.querySelectorAll('.product-card[data-category="art"]');
     return Array.from(artCards)
+      .filter((card) => !isCardHiddenForCustomer(card))
       .map((card) => {
         const cardTitle = card.querySelector("h2");
         const image = card.querySelector(".product-image");

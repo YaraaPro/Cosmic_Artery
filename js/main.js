@@ -57,6 +57,8 @@ const AR_TEXT_MAP = {
   "Add to Cart": "أضف إلى السلة",
   "Click to Choose": "انقر للاختيار",
   "Added": "تمت الإضافة",
+  "Hide Item": "\u0625\u062e\u0641\u0627\u0621 \u0627\u0644\u0639\u0646\u0635\u0631",
+  "Unhide Item": "\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u0639\u0646\u0635\u0631",
   "Your Items": "منتجاتك",
   "Adjust quantities, remove items, or continue to checkout once ready.": "عدّل الكميات أو احذف العناصر أو تابع إتمام الطلب عند الجاهزية.",
   "Items:": "العناصر:",
@@ -155,6 +157,7 @@ const AR_TEXT_EXTRA_MAP = {
     "إكسسوارات قابلة للتخصيص بالكامل حسب طلبك بالتفصيل.",
   "Order Notes (Optional)": "ملاحظات الطلب (اختياري)",
   "Add size details, personalization, or delivery notes...": "أضيفي تفاصيل المقاس أو التخصيص أو ملاحظات التسليم...",
+  "Manage mode is on. Hidden items are visible only to you.": "\u0648\u0636\u0639 \u0627\u0644\u0625\u062f\u0627\u0631\u0629 \u0645\u0641\u0639\u0644. \u0627\u0644\u0639\u0646\u0627\u0635\u0631 \u0627\u0644\u0645\u062e\u0641\u064a\u0629 \u062a\u0638\u0647\u0631 \u0644\u0643 \u0641\u0642\u0637.",
   "No products are listed in this filter yet.": "لا توجد منتجات مدرجة في هذا الفلتر حتى الآن.",
   "Starter brand assets are live and can be replaced with your final logo files anytime.":
     "عناصر الهوية المبدئية مفعلة الآن ويمكن استبدالها بملفات شعارك النهائية في أي وقت.",
