@@ -38,6 +38,13 @@
       <div class="cart-summary">
         <p>Items: <strong id="cart-item-count">0</strong></p>
         <p>Total: <strong id="cart-total">$0.00</strong></p>
+        <label class="cart-notes-label" for="cart-note">Order Notes (Optional)</label>
+        <textarea
+          class="cart-notes"
+          id="cart-note"
+          rows="3"
+          placeholder="Add size details, personalization, or delivery notes..."
+        ></textarea>
         <div class="cart-summary-actions">
           <button type="button" class="cart-btn" id="cart-clear-btn">Clear Cart</button>
           <button type="button" class="cart-btn cart-btn-primary" id="cart-checkout-btn">Checkout via WhatsApp</button>
@@ -47,7 +54,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Â© 2026 Cosmic Artery. All rights reserved.</p>
+    <p>© 2026 Cosmic Artery. All rights reserved.</p>
   </footer>
 
   <a class="floating-cart" href="cart.html">Cart <span class="cart-count" data-cart-count>0</span></a>
@@ -56,5 +63,4 @@
   <script src="js/cart.js"></script>
 </body>
 </html>
-
 

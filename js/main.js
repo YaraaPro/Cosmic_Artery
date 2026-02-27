@@ -89,9 +89,13 @@ const AR_TEXT_EXTRA_MAP = {
     "جميع القطع مرسومة مني أنا شخصيًا بنسبة 100%، بدون أي تدخل للذكاء الاصطناعي.",
   "Every item is created and decorated with exuisite detail to give you the hughest quality.":
     "كل قطعة يتم صنعها وتزيينها بتفاصيل دقيقة لتقديم أعلى جودة ممكنة.",
+  "Every item is created and decorated with exquisite detail to give you the highest quality.":
+    "كل قطعة يتم صنعها وتزيينها بتفاصيل دقيقة لتقديم أعلى جودة ممكنة.",
   "From the religious to the anime, we offer a wide variety of aesthetics so you are guaranteed to find your match.":
     "من الطابع الديني إلى الأنمي، نوفر أنماطًا متعددة لتجدي ما يناسب ذوقك.",
   "Each item has been priced with care to insure everyone can afford it at least 1 piece because art shouldn't be a luxury.":
+    "تم تسعير كل قطعة بعناية حتى يتمكن الجميع من اقتناء قطعة واحدة على الأقل لأن الفن لا يجب أن يكون رفاهية.",
+  "Each item has been priced with care to ensure everyone can afford at least one piece, because art shouldn't be a luxury.":
     "تم تسعير كل قطعة بعناية حتى يتمكن الجميع من اقتناء قطعة واحدة على الأقل لأن الفن لا يجب أن يكون رفاهية.",
   "New art prints and accessories will be added as the shop expands.":
     "ستُضاف طبعات فنية وإكسسوارات جديدة مع توسع المتجر.",
@@ -119,8 +123,11 @@ const AR_TEXT_EXTRA_MAP = {
   "Pair of acrylic paintings with gold accents.": "زوج من لوحات الأكريليك مع لمسات ذهبية.",
   "Negative space painting, watercolor on A4 paper.": "لوحة بأسلوب المساحة السلبية بالألوان المائية على ورق A4.",
   "Atmospheric warm painting, Acrylic on A4 paper.": "لوحة دافئة الأجواء بأكريليك على ورق A4.",
+  "Atmospheric warm painting, acrylic on A4 paper.": "لوحة دافئة الأجواء بأكريليك على ورق A4.",
   "Bold bright painting, Acrylic on A4 paper.": "لوحة جريئة ومشرقة بأكريليك على ورق A4.",
+  "Bold, bright painting, acrylic on A4 paper.": "لوحة جريئة ومشرقة بأكريليك على ورق A4.",
   "Soft stylized realism painting, Acrylic on A4 paper.": "لوحة واقعية مبسطة وناعمة بأكريليك على ورق A4.",
+  "Soft, stylized realism painting, acrylic on A4 paper.": "لوحة واقعية مبسطة وناعمة بأكريليك على ورق A4.",
   "Starry night and Sunflowers painted on small wooden rectangular keychain.":
     "لوحة لليلة مرصعة بالنجوم وعباد الشمس على سلسلة مفاتيح خشبية مستطيلة صغيرة.",
   "Cute and soft bunny painted on small wooden rectangular keychain with a heart clasp.":
@@ -144,6 +151,10 @@ const AR_TEXT_EXTRA_MAP = {
     "أعمال فنية رقمية مخصصة للصور الشخصية أو البنرات أو القطع القابلة للطباعة.",
   "Fully Customizable accessories based on your exact request.":
     "إكسسوارات قابلة للتخصيص بالكامل حسب طلبك بالتفصيل.",
+  "Fully customizable accessories based on your exact request.":
+    "إكسسوارات قابلة للتخصيص بالكامل حسب طلبك بالتفصيل.",
+  "Order Notes (Optional)": "ملاحظات الطلب (اختياري)",
+  "Add size details, personalization, or delivery notes...": "أضيفي تفاصيل المقاس أو التخصيص أو ملاحظات التسليم...",
   "No products are listed in this filter yet.": "لا توجد منتجات مدرجة في هذا الفلتر حتى الآن.",
   "Starter brand assets are live and can be replaced with your final logo files anytime.":
     "عناصر الهوية المبدئية مفعلة الآن ويمكن استبدالها بملفات شعارك النهائية في أي وقت.",

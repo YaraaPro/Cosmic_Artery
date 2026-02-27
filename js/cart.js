@@ -4,10 +4,43 @@ const cartTotal = document.querySelector("#cart-total");
 const cartItemCount = document.querySelector("#cart-item-count");
 const cartClearBtn = document.querySelector("#cart-clear-btn");
 const cartCheckoutBtn = document.querySelector("#cart-checkout-btn");
+const cartNoteInput = document.querySelector("#cart-note");
 const WHATSAPP_OWNER_NUMBER = "96176842023";
+const CART_NOTE_STORAGE_KEY = "expressionism_artery_cart_note_v1";
+
+const loadCartNote = () => {
+  try {
+    return localStorage.getItem(CART_NOTE_STORAGE_KEY) || "";
+  } catch (_error) {
+    return "";
+  }
+};
+
+const saveCartNote = (value) => {
+  try {
+    localStorage.setItem(CART_NOTE_STORAGE_KEY, String(value || ""));
+  } catch (_error) {
+    // Ignore storage failures (private mode, quota, etc.)
+  }
+};
+
+const clearCartNote = () => {
+  try {
+    localStorage.removeItem(CART_NOTE_STORAGE_KEY);
+  } catch (_error) {
+    // Ignore storage failures.
+  }
+};
 
 if (window.CartStore && cartList) {
   const { loadCart, formatPrice, getCartCount, getCartTotal, updateQty, removeItem, clearCart } = window.CartStore;
+
+  if (cartNoteInput) {
+    cartNoteInput.value = loadCartNote();
+    cartNoteInput.addEventListener("input", () => {
+      saveCartNote(cartNoteInput.value);
+    });
+  }
 
   const render = () => {
     const items = loadCart();
@@ -80,6 +113,10 @@ if (window.CartStore && cartList) {
   if (cartClearBtn) {
     cartClearBtn.addEventListener("click", () => {
       clearCart();
+      clearCartNote();
+      if (cartNoteInput) {
+        cartNoteInput.value = "";
+      }
       render();
     });
   }
@@ -110,6 +147,11 @@ if (window.CartStore && cartList) {
 
       lines.push("");
       lines.push(`Total: ${formatPrice(getCartTotal())}`);
+      const orderNote = cartNoteInput ? cartNoteInput.value.trim() : "";
+      if (orderNote) {
+        lines.push("");
+        lines.push(`Order notes: ${orderNote}`);
+      }
       lines.push("Please confirm availability and next steps.");
 
       const encoded = encodeURIComponent(lines.join("\n"));
