@@ -12,6 +12,7 @@ const emptyState = document.querySelector("#shop-empty");
 const productImageButtons = document.querySelectorAll(".product-image-btn");
 const productCtaButtons = document.querySelectorAll(".product-cta");
 const lightbox = document.querySelector("#image-lightbox");
+const lightboxContent = document.querySelector(".lightbox-content");
 const lightboxImage = document.querySelector("#lightbox-image");
 const lightboxCaption = document.querySelector("#lightbox-caption");
 const lightboxTitle = document.querySelector("#lightbox-title");
@@ -227,22 +228,27 @@ if (shopRoot && tabButtons.length > 0) {
     };
   };
 
-  let miniPrintGalleryItems = [];
-  let miniPrintIndex = 0;
-  let miniPrintGalleryOpen = false;
+  let galleryItems = [];
+  let galleryIndex = 0;
+  let galleryMode = "";
 
-  const setMiniPrintUI = (enabled) => {
+  const setGalleryUI = (mode) => {
+    const hasSequenceGallery = mode === "mini" || mode === "commission";
+
+    if (lightboxContent) {
+      lightboxContent.classList.toggle("mini-gallery-mode", mode === "mini");
+    }
     if (lightboxTitle) {
-      lightboxTitle.hidden = !enabled;
+      lightboxTitle.hidden = !hasSequenceGallery;
     }
     if (lightboxPrev) {
-      lightboxPrev.hidden = !enabled;
+      lightboxPrev.hidden = !hasSequenceGallery;
     }
     if (lightboxNext) {
-      lightboxNext.hidden = !enabled;
+      lightboxNext.hidden = !hasSequenceGallery;
     }
     if (miniPrintCartBtn) {
-      miniPrintCartBtn.hidden = !enabled;
+      miniPrintCartBtn.hidden = mode !== "mini";
     }
   };
 
@@ -266,8 +272,48 @@ if (shopRoot && tabButtons.length > 0) {
       .filter((item) => item && item.src);
   };
 
-  const renderMiniPrintGalleryItem = () => {
-    const item = miniPrintGalleryItems[miniPrintIndex];
+  const collectCommissionGalleryItems = (card) => {
+    if (!card) {
+      return [];
+    }
+
+    const cardTitle = card.querySelector("h2");
+    const baseName = cardTitle ? cardTitle.textContent.trim() : "Commission";
+    const galleryImages = card.querySelectorAll(".commission-gallery-image");
+
+    if (galleryImages.length > 0) {
+      return Array.from(galleryImages)
+        .map((image, index) => {
+          const src = image.currentSrc || image.getAttribute("src") || "";
+          const label = image.alt && image.alt.trim() ? image.alt.trim() : `${baseName} Example ${index + 1}`;
+          return {
+            name: label,
+            src,
+            alt: label
+          };
+        })
+        .filter((item) => item.src);
+    }
+
+    const fallbackImage = card.querySelector(".product-image");
+    if (!fallbackImage) {
+      return [];
+    }
+    const fallbackSrc = fallbackImage.currentSrc || fallbackImage.getAttribute("src") || "";
+    if (!fallbackSrc) {
+      return [];
+    }
+    return [
+      {
+        name: `${baseName} Example 1`,
+        src: fallbackSrc,
+        alt: `${baseName} commission example`
+      }
+    ];
+  };
+
+  const renderGalleryItem = () => {
+    const item = galleryItems[galleryIndex];
     if (!item || !lightboxImage) {
       return;
     }
@@ -276,16 +322,20 @@ if (shopRoot && tabButtons.length > 0) {
     lightboxImage.alt = item.alt;
 
     if (lightboxCaption) {
-      lightboxCaption.textContent = `${item.name} - Mini Art Print`;
+      if (galleryMode === "mini") {
+        lightboxCaption.textContent = `${item.name} - Mini Art Print`;
+      } else if (galleryMode === "commission") {
+        lightboxCaption.textContent = `${item.name} - Commission Example`;
+      }
     }
     if (lightboxTitle) {
       lightboxTitle.textContent = item.name;
     }
-    if (miniPrintCartBtn) {
+    if (miniPrintCartBtn && galleryMode === "mini") {
       miniPrintCartBtn.textContent = `Add ${item.name} Mini Print to Cart`;
     }
 
-    const singleItem = miniPrintGalleryItems.length <= 1;
+    const singleItem = galleryItems.length <= 1;
     if (lightboxPrev) {
       lightboxPrev.disabled = singleItem;
     }
@@ -298,8 +348,8 @@ if (shopRoot && tabButtons.length > 0) {
     if (!lightbox || !lightboxImage) {
       return;
     }
-    miniPrintGalleryOpen = false;
-    setMiniPrintUI(false);
+    galleryMode = "";
+    setGalleryUI(galleryMode);
     lightboxImage.src = img.currentSrc || img.src;
     lightboxImage.alt = img.alt || "Product image preview";
 
@@ -314,25 +364,41 @@ if (shopRoot && tabButtons.length > 0) {
     if (!lightbox || !lightboxImage) {
       return;
     }
-    miniPrintGalleryItems = collectMiniPrintGalleryItems();
-    if (miniPrintGalleryItems.length === 0) {
+    galleryItems = collectMiniPrintGalleryItems();
+    if (galleryItems.length === 0) {
       return;
     }
-    miniPrintGalleryOpen = true;
-    miniPrintIndex = 0;
-    setMiniPrintUI(true);
-    renderMiniPrintGalleryItem();
+    galleryMode = "mini";
+    galleryIndex = 0;
+    setGalleryUI(galleryMode);
+    renderGalleryItem();
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
   };
 
-  const stepMiniPrintGallery = (direction) => {
-    if (!miniPrintGalleryOpen || miniPrintGalleryItems.length < 2) {
+  const openCommissionGalleryLightbox = (card) => {
+    if (!lightbox || !lightboxImage) {
       return;
     }
-    const max = miniPrintGalleryItems.length;
-    miniPrintIndex = (miniPrintIndex + direction + max) % max;
-    renderMiniPrintGalleryItem();
+    galleryItems = collectCommissionGalleryItems(card);
+    if (galleryItems.length === 0) {
+      return;
+    }
+    galleryMode = "commission";
+    galleryIndex = 0;
+    setGalleryUI(galleryMode);
+    renderGalleryItem();
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+  };
+
+  const stepGallery = (direction) => {
+    if (!galleryMode || galleryItems.length < 2) {
+      return;
+    }
+    const max = galleryItems.length;
+    galleryIndex = (galleryIndex + direction + max) % max;
+    renderGalleryItem();
   };
 
   const closeLightbox = () => {
@@ -344,8 +410,8 @@ if (shopRoot && tabButtons.length > 0) {
     if (lightboxCaption) {
       lightboxCaption.textContent = "";
     }
-    miniPrintGalleryOpen = false;
-    setMiniPrintUI(false);
+    galleryMode = "";
+    setGalleryUI(galleryMode);
     document.body.style.overflow = "";
   };
 
@@ -372,11 +438,11 @@ if (shopRoot && tabButtons.length > 0) {
 
   if (miniPrintCartBtn) {
     miniPrintCartBtn.addEventListener("click", () => {
-      if (!window.CartStore || !miniPrintGalleryOpen) {
+      if (!window.CartStore || galleryMode !== "mini") {
         return;
       }
       const miniPrintCard = shopRoot.querySelector('[data-mini-print-gallery="art"]');
-      const activeMini = miniPrintGalleryItems[miniPrintIndex];
+      const activeMini = galleryItems[galleryIndex];
       if (!miniPrintCard || !activeMini) {
         return;
       }
@@ -415,16 +481,20 @@ if (shopRoot && tabButtons.length > 0) {
         openMiniPrintGalleryLightbox();
         return;
       }
+      if (card && (card.dataset.category || "").toLowerCase() === "custom-commissions") {
+        openCommissionGalleryLightbox(card);
+        return;
+      }
       openRegularLightbox(img, title);
     });
   });
 
   if (lightboxPrev) {
-    lightboxPrev.addEventListener("click", () => stepMiniPrintGallery(-1));
+    lightboxPrev.addEventListener("click", () => stepGallery(-1));
   }
 
   if (lightboxNext) {
-    lightboxNext.addEventListener("click", () => stepMiniPrintGallery(1));
+    lightboxNext.addEventListener("click", () => stepGallery(1));
   }
 
   if (lightbox) {
@@ -437,12 +507,12 @@ if (shopRoot && tabButtons.length > 0) {
   }
 
   document.addEventListener("keydown", (event) => {
-    if (miniPrintGalleryOpen && event.key === "ArrowLeft") {
-      stepMiniPrintGallery(-1);
+    if (galleryMode && event.key === "ArrowLeft") {
+      stepGallery(-1);
       return;
     }
-    if (miniPrintGalleryOpen && event.key === "ArrowRight") {
-      stepMiniPrintGallery(1);
+    if (galleryMode && event.key === "ArrowRight") {
+      stepGallery(1);
       return;
     }
     if (event.key === "Escape" && lightbox && !lightbox.hidden) {
